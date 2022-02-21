@@ -1,0 +1,58 @@
+<div>
+    <form action="{{action}}" method="post">
+        <div>
+            <label for="first">First Name</label>
+            <div>
+                <input type="text" placeholder="Noah" name="first" value="{{first}}"/>
+            </div>
+        </div>
+
+        <div>
+            <label for="last">Last Name</label>
+            <div>
+                <input type="text" placeholder="Ukura" name="last" value="{{last}}"/>
+            </div>
+        </div>
+
+        <div>
+            <label>Department</label>
+            <div>
+                <select name="department">
+                    {{#select department}}
+                        <option value="Information Technology">Information Technology</option>
+                        <option value="Administration">Administration</option>
+                        <option value="Shipping">Shipping</option>
+                    {{/select}}
+                </select>
+            </div>
+        </div>
+
+        <div>
+            <label>Start Date</label>
+            <div>
+                <input type="date" value="{{start}}" name="start"/>
+            </div>
+        </div>
+
+        <div>
+            <label>Job Title</label>
+            <div>
+                <input type="text"  value="{{job}}" placeholder="IT" name="job"/>
+            </div>
+        </div>
+
+        <div>
+            <label >Salary</label>
+            <div>
+                <input type="number" value="{{salary}}" placeholder="100000" name="salary"/>
+            </div>
+        </div>
+
+        <div>
+            <div>
+                <button>Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+

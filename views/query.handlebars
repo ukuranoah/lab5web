@@ -1,0 +1,199 @@
+<div>
+    <h1>Query Sandbox</h1>
+
+    <div class="field">
+        <label class="label" for="verb">Verb/HTTP Method</label>
+        <div class="select">
+            <select name="verb">
+                <option value="GET">GET</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="field">
+        <label class="label" for="resource">Query Resource</label>
+        <div class="control">
+            <input style="width:50%" class="input" type="text" name="resource" value="employees/"/>
+        </div>
+    </div>
+
+
+    <div x-data="{isSorting: false}" >
+        <div class="field">
+            <label class="checkbox">
+                <input type="checkbox" id="isSorting" x-model="isSorting">
+                Sort Data
+            </label>
+        </div>
+
+        <div class="mb-3" x-show="isSorting" x-transition>
+
+            <div class="field">
+                <label class="label" for="sorton">Sort On</label>
+                <div class="select">
+                    <select name="sorton">
+                        <option value="first">First Name</option>
+                        <option value="last">Last Name</option>
+                        <option value="department">Department</option>
+                        <option value="start" >Start Date</option>
+                        <option value="job" >Job Title</option>
+                        <option value="salary" >Salary</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label" for="sortdir">Sort Direction</label>
+                <div class="select">
+                    <select name="sortdir">
+                        <option value="asc">Ascending</option>
+                        <option value="desc">Descending</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div x-data="{isFiltering: false}" >
+        <div class="field">
+            <label class="checkbox">
+                <input type="checkbox" id="isFiltering" x-model="isFiltering">
+                Filter Data
+            </label>
+        </div>
+        <div class="mb-3" id="filter" x-show="isFiltering" x-transition>
+            <div class="field">
+                <label class="label" for="first">First Name</label>
+                <div class="control">
+                    <input class="input" type="text" name="first" value=""/>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label" for="last">Last Name</label>
+                <div class="control">
+                    <input class="input" type="text" name="last" value=""/>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label" for="department">Department</label>
+                <div class="control">
+                    <input class="input" type="text" name="department" value=""/>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label" for="start">Start Date</label>
+                <div class="control">
+                    <input class="input" type="date" name="start" value=""/>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label" for="job">Job Title</label>
+                <div class="control">
+                    <input class="input" type="text" name="job" value=""/>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label" for="salary">Salary</label>
+                <div class="control">
+                    <input class="input" type="number" name="salary" value=""/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="field">
+        <button id="make-request">Make Request</button>
+    </div>
+
+
+    <div>
+        <h3 class="subtitle">Results</h3>
+        <p>Query:</p>
+        <p id="result-query"></p>
+        <div class="field">
+            <textarea class="textarea" name="results" readonly></textarea>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+
+
+    const isSortingSelector = $('#isSorting');
+    const isFilteringSelector = $('#isFiltering');
+    const resourceSelector = $('input[name="resource"]');
+    const sortOnSelector = $('select[name="sorton"]');
+    const sortDirSelector = $('select[name="sortdir"]');
+    const httpVerbSelector = $('select[name="verb"]');
+    const resultsSelector = $('textarea[name="results"]');
+    const queryCallSelector = $('#result-query');
+
+    $("#make-request").on('click', () => {
+
+        let url = `${window.location.href.match(/^.*\//)}api/v1/${resourceSelector.val()}`
+
+        if(isSortingSelector.prop('checked')) {
+            url += `?_sort=${(sortDirSelector.val() === 'desc') ? '-' : ''}${sortOnSelector.val()}`
+        }
+
+        if(isFilteringSelector.prop('checked')) {
+            url += `${(isSortingSelector.prop('checked')) ? '&' : '?'}`;
+            $("#filter :input").each(function (index) {
+                let item = $(this);
+                if (item.val() !== '') {
+                    url += `${item.prop('name')}=${item.val()}&`;
+                }
+            });
+        }
+
+        if (url.slice(-1) === '&' || url.slice(-1) === '?') {
+            url = url.slice(0, -1);
+        }
+
+        queryCallSelector.text(url);
+        makeCall(url);
+    });
+
+    const makeCall = (url, data) => {
+
+        let headers = new Headers();
+        headers.set('Content-Type', 'application/json');
+
+        let myInit = {
+            method: httpVerbSelector.val(),
+            headers: headers,
+            mode:'cors',
+            cache:'default'
+        }
+
+        // This assignment only uses GETs
+        if(['POST', 'PUT'].indexOf(httpVerbSelector.val()) > -1){
+            //myInit.body = JSON.stringify(data)
+        }
+
+        fetch(new Request(url, myInit)).then(response => {
+            let contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                return response.text();
+            }
+
+            if(response.status === 204){
+                return 'Delete';
+            }
+
+            throw new TypeError("This isn't JSON");
+
+        }).then(jsonText => {
+            resultsSelector.val(jsonText);
+        }).catch(err => {
+            console.log(err)
+        })
+
+    }
+
+
+</script>

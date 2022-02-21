@@ -1,0 +1,23 @@
+<div>
+    <div>
+        <p></p>
+        <div>
+            <div>
+                <p><strong>{{first}} {{last}}</strong> has been an employee for <i>{{daysSince start}} days</i> (started {{start}})</p>
+                <p><strong>Position:</strong> {{job}}</p>
+                <p><strong>Department:</strong> {{department}}</p>
+                <p><strong>Salary:</strong> {{formatMoney salary}}</p>
+            </div>
+        </div>
+        <footer>
+            <div>
+                <form action="/delete/{{_id}}" method="post">
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+            <div>
+                <a href="/update/{{_id}}">Update</a>
+            </div>
+        </footer>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+{
+  "name": "lab6web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index"
+  },
+  "author": "Noah Ukura",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.1",
+    "debug": "^4.3.3",
+    "dotenv": "^14.3.2",
+    "express": "^4.17.2",
+    "express-handlebars": "^6.0.2",
+    "handlebars": "^4.7.7",
+    "mongodb": "^4.3.1",
+    "mongoose": "^6.2.1",
+    "pug": "^3.0.2"
+  }
+}
